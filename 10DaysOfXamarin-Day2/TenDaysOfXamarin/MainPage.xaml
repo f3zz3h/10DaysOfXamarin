@@ -4,12 +4,26 @@
              xmlns:local="clr-namespace:TenDaysOfXamarin"
              x:Class="TenDaysOfXamarin.MainPage">
     <StackLayout Margin="16,20,16,0">
-        <Entry x:Name="nameEntry"
-               Placeholder="Enter your name"/>
-        <Button Clicked="Handle_Clicked"
-                Text="Say hello"/>
-        <Label x:Name="greetingLabel"
-               Text="Hello stranger, welcome to 10 Days of Xamarin."
-               FontSize="20"/>
+        <Entry x:Name="titleEntry"
+               TextChanged="titleEntry_TextChanged"
+               Placeholder="Title of your experience"
+               
+               Style="{StaticResource mainEntryStyle}"/>
+        <Editor x:Name="contentEditor"
+                TextChanged="contentEditor_TextChanged"
+                VerticalOptions="FillAndExpand"
+                Placeholder="Write your own experience..."
+                Style="{StaticResource mainEditorStyle}"/>
+        
+        <Button x:Name="saveButton"
+                Text="Save"
+                Clicked="saveButton_Clicked"
+                IsEnabled="False"
+                Style="{StaticResource mainButtonStyle}"/>
+        
+        <Button x:Name="cancelButton"
+                Text="Cancel"
+                Clicked="cancelButton_Clicked"
+                Style="{StaticResource cancelButtonStyle}"/>
     </StackLayout>
 </ContentPage>
