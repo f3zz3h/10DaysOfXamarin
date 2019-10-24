@@ -7,9 +7,12 @@ namespace TenDaysOfXamarin
 {
     public partial class App : Application
     {
-        public App()
+        public static string DatabasePath;
+        public App(string dataBasepath)
         {
             InitializeComponent();
+
+            DatabasePath = dataBasepath;
 
             MainPage = new MainPage();
         }

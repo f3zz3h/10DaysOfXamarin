@@ -3,23 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:local="clr-namespace:TenDaysOfXamarin"
              x:Class="TenDaysOfXamarin.MainPage">
-    <StackLayout Margin="16,20">
+    <StackLayout Margin="16,20,16,0">
         <Entry x:Name="titleEntry"
-               TextChanged="TitleEntry_TextChanged"
-               Style="{StaticResource mainEntryStyle}"
-               Placeholder="Title of the experience"/>
+               TextChanged="titleEntry_TextChanged"
+               Placeholder="Title of your experience"
+               
+               Style="{StaticResource mainEntryStyle}"/>
         <Editor x:Name="contentEditor"
-                TextChanged="ContentEditor_TextChanged"
-                Style="{StaticResource mainEditorStyle}"
+                TextChanged="contentEditor_TextChanged"
                 VerticalOptions="FillAndExpand"
-                Placeholder="Write your experience..."/>
+                Placeholder="Write your own experience..."
+                Style="{StaticResource mainEditorStyle}"/>
+        
         <Button x:Name="saveButton"
                 Text="Save"
-                IsEnabled="false"
-                Clicked="SaveButton_Clicked"
+                Clicked="saveButton_Clicked"
+                IsEnabled="False"
                 Style="{StaticResource mainButtonStyle}"/>
-        <Button Text="Cancel"
-                Clicked="ContentEntry_Clicked"
+        
+        <Button x:Name="cancelButton"
+                Text="Cancel"
+                Clicked="cancelButton_Clicked"
                 Style="{StaticResource cancelButtonStyle}"/>
     </StackLayout>
 </ContentPage>

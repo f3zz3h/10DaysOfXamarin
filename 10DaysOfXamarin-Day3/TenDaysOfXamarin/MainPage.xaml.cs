@@ -16,28 +16,33 @@ namespace TenDaysOfXamarin
 
         private void CheckIfShouldBeEnabled()
         {
-            saveButton.IsEnabled = false;
             if (!string.IsNullOrWhiteSpace(titleEntry.Text) && !string.IsNullOrWhiteSpace(contentEditor.Text))
+            {
                 saveButton.IsEnabled = true;
+            }
+            else
+            {
+                saveButton.IsEnabled = false;
+            }
         }
 
-        void TitleEntry_TextChanged(object sender, Xamarin.Forms.TextChangedEventArgs e)
+        private void contentEditor_TextChanged(object sender, TextChangedEventArgs e)
         {
             CheckIfShouldBeEnabled();
         }
 
-        void ContentEditor_TextChanged(object sender, Xamarin.Forms.TextChangedEventArgs e)
+        private void titleEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
             CheckIfShouldBeEnabled();
         }
 
-        void SaveButton_Clicked(object sender, System.EventArgs e)
+        private void saveButton_Clicked(object sender, EventArgs e)
         {
-            titleEntry.Text = string.Empty;
-            contentEditor.Text = string.Empty;
+            titleEntry.Text = String.Empty;
+            contentEditor.Text = String.Empty;
         }
 
-        void ContentEntry_Clicked(object sender, System.EventArgs e)
+        private void cancelButton_Clicked(object sender, EventArgs e)
         {
 
         }
