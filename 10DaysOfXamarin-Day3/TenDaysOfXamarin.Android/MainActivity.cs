@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using System.IO;
 
 namespace TenDaysOfXamarin.Droid
 {
@@ -19,7 +20,10 @@ namespace TenDaysOfXamarin.Droid
 
             base.OnCreate(savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            LoadApplication(new App());
+            string filename = "database.db3";
+            string folderpath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+
+            LoadApplication(new App(Path.Combine(folderpath,filename)));
         }
     }
 }
