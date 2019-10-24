@@ -1,6 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using TenDaysOfXamarin.View;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace TenDaysOfXamarin
@@ -14,7 +15,13 @@ namespace TenDaysOfXamarin
 
             DatabasePath = dataBasepath;
 
-            MainPage = new MainPage();
+            MainPage = new NavigationPage(new ExperiencesPage());
+        }
+        public App()
+        {
+            InitializeComponent();
+
+            MainPage = new NavigationPage(new ExperiencesPage());
         }
 
         protected override void OnStart()
