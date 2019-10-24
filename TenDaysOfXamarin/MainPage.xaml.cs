@@ -68,7 +68,7 @@ namespace TenDaysOfXamarin
 
         private void cancelButton_Clicked(object sender, EventArgs e)
         {
-
+            Navigation.PopAsync();
         }
     }
 }
