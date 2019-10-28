@@ -10,6 +10,8 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace TenDaysOfXamarin
 {
@@ -53,7 +55,11 @@ namespace TenDaysOfXamarin
                 Title = titleEntry.Text,
                 Content = contentEditor.Text,
                 CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                UpdatedAt = DateTime.Now,
+                VenueName = venueNameLabel.Text,
+                VenueCategory = venueCategoryLabel.Text,
+                VenueLat = float.Parse(venueCoordinatesLabel.Text.Split(',')[0]),
+                VenueLng = float.Parse(venueCoordinatesLabel.Text.Split(',')[1])
             };
 
             using (SQLiteConnection connection = new SQLiteConnection(App.DatabasePath))
@@ -66,6 +72,9 @@ namespace TenDaysOfXamarin
             {
                 titleEntry.Text = String.Empty;
                 contentEditor.Text = String.Empty;
+                venueNameLabel.Text = String.Empty;
+                venueCategoryLabel.Text = String.Empty;
+                venueCoordinatesLabel.Text = String.Empty;
             }
             else
             {
@@ -111,6 +120,7 @@ namespace TenDaysOfXamarin
 
         Position position;
         IGeolocator locator = CrossGeolocator.Current;
+
         private async void GetLocation()
         {
      
@@ -137,6 +147,51 @@ namespace TenDaysOfXamarin
             base.OnDisappearing();
 
             locator.StopListeningAsync();
+        }
+
+        private async void searchEntry_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+            if (!string.IsNullOrWhiteSpace(searchEntry.Text))
+            {
+                string url = $"https://api.foursquare.com/v2/venues/search?ll={position.Latitude},{position.Longitude}&radius=500&query={searchEntry.Text}&limit=3&client_id={Helpers.Constants.FOURSQR_CLIENT_ID}&client_secret={Helpers.Constants.FOURSQR_CLIENT_SECRET}&v={DateTime.Now.ToString("yyyyMMdd")}";
+
+                // added using System.Net.Http;
+                using (HttpClient client = new HttpClient())
+                {
+                    // made the method async
+                    string json = await client.GetStringAsync(url);
+
+                    // added using Newtonsoft.Json;
+                    Search searchResult = JsonConvert.DeserializeObject<Search>(json);
+                    venuesListView.IsVisible = true;
+                    venuesListView.ItemsSource = searchResult.response.venues;
+                }
+            }
+            else
+            {
+                venuesListView.IsVisible = false;
+            }
+        }
+
+        private void venuesListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            if (venuesListView.SelectedItem != null)
+            {
+                selectedVenueStackLayout.IsVisible = true;
+                searchEntry.Text = string.Empty;
+                venuesListView.IsVisible = false;
+
+                Venue selectedVenue = venuesListView.SelectedItem as Venue;
+                venueNameLabel.Text = selectedVenue.name;
+                venueCategoryLabel.Text = selectedVenue.categories.FirstOrDefault()?.name;
+                venueCoordinatesLabel.Text = $"{selectedVenue.location.lat:0.000}, {selectedVenue.location.lng:0.000}";
+            }
+            else
+            {
+                selectedVenueStackLayout.IsVisible = false;
+            }
+
         }
     }
 }
