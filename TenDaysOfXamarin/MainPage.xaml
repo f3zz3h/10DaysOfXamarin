@@ -19,7 +19,8 @@
                   ItemSelected="venuesListView_ItemSelected">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell />
+                    <TextCell Text="{Binding name}"
+                              Detail="{Binding location.distance, StringFormat='{0} meters away'}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

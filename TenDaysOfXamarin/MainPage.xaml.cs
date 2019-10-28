@@ -109,7 +109,7 @@ namespace TenDaysOfXamarin
             //granted
             if (status == PermissionStatus.Granted)
             {
-
+                GetLocation();
             }
             else
             {
@@ -152,7 +152,7 @@ namespace TenDaysOfXamarin
         private async void searchEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
 
-            if (!string.IsNullOrWhiteSpace(searchEntry.Text))
+            if (!string.IsNullOrWhiteSpace(searchEntry.Text) && position != null)
             {
                 string url = $"https://api.foursquare.com/v2/venues/search?ll={position.Latitude},{position.Longitude}&radius=500&query={searchEntry.Text}&limit=3&client_id={Helpers.Constants.FOURSQR_CLIENT_ID}&client_secret={Helpers.Constants.FOURSQR_CLIENT_SECRET}&v={DateTime.Now.ToString("yyyyMMdd")}";
 
