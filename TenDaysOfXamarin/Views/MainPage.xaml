@@ -5,18 +5,19 @@
              x:Class="TenDaysOfXamarin.MainPage">
     <StackLayout Margin="16,20,16,0">
         
-        <Entry x:Name="titleEntry"
-               TextChanged="titleEntry_TextChanged"
+        <Entry Text="{Binding Title, Mode=TwoWay}"
                Placeholder="Title of your experience"       
-               Style="{StaticResource mainEntryStyle}"/>
-        <Entry x:Name="searchEntry"
+               Style="{StaticResource mainEntryStyle}"
+               />
+        <Entry Text="{Binding Query, Mode=TwoWay}"
                Style="{StaticResource mainEntryStyle}"
                Placeholder="Search a nearby venue..."
                TextChanged="searchEntry_TextChanged"/>
         <ListView x:Name="venuesListView"
-              HeightRequest="20"
-              Margin="-16,0"
-                  ItemSelected="venuesListView_ItemSelected">
+                  SelectedItem="{Binding SelectedVenue, Mode=TwoWay}"
+                  HeightRequest="20"
+                  Margin="-16,0"
+                  IsVisible="{Binding ShowVenues}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextCell Text="{Binding name}"
@@ -25,17 +26,15 @@
             </ListView.ItemTemplate>
         </ListView>
         <StackLayout x:Name="selectedVenueStackLayout"
-             IsVisible="false"
-                >
-            <Label x:Name="venueNameLabel"
+             IsVisible="{Binding ShowSelectedVenue}">
+            <Label Text="{Binding SelectedVenue.name}"
            Style="{StaticResource titleLabelStyle}"/>
-            <Label x:Name="venueCategoryLabel"
+            <Label Text="{Binding SelectedVenue.MainCategory}"
            Style="{StaticResource subtitleLabelStyle}"/>
-            <Label x:Name="venueCoordinatesLabel"
+            <Label Text="{Binding SelectedVenue.location.coordinates}"
            Style="{StaticResource detailLabelStyle}"/>
         </StackLayout>
-        <Editor x:Name="contentEditor"
-                TextChanged="contentEditor_TextChanged"
+        <Editor Text="{Binding Content, Mode=TwoWay}"
                 VerticalOptions="FillAndExpand"
                 Placeholder="Write your own experience..."
                 Style="{StaticResource mainEditorStyle}"/>
@@ -43,7 +42,7 @@
         <Button x:Name="saveButton"
                 Text="Save"
                 Clicked="saveButton_Clicked"
-                IsEnabled="False"
+                IsEnabled="{Binding CanSave}"
                 Style="{StaticResource mainButtonStyle}"/>
         
         <Button x:Name="cancelButton"

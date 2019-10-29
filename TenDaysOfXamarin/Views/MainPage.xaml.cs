@@ -12,39 +12,21 @@ using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 using System.Net.Http;
 using Newtonsoft.Json;
+using TenDaysOfXamarin.ViewModels;
 
 namespace TenDaysOfXamarin
 {
     public partial class MainPage : ContentPage
     {
+        MainVM ViewModel;
         public MainPage()
         {
             InitializeComponent();
+            ViewModel = new MainVM();
+            BindingContext = ViewModel;
 
             locator.PositionChanged += Locator_PositionChanged;
 
-        }
-
-        private void CheckIfShouldBeEnabled()
-        {
-            if (!string.IsNullOrWhiteSpace(titleEntry.Text) && !string.IsNullOrWhiteSpace(contentEditor.Text))
-            {
-                saveButton.IsEnabled = true;
-            }
-            else
-            {
-                saveButton.IsEnabled = false;
-            }
-        }
-
-        private void contentEditor_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            CheckIfShouldBeEnabled();
-        }
-
-        private void titleEntry_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            CheckIfShouldBeEnabled();
         }
 
         private void saveButton_Clicked(object sender, EventArgs e)
@@ -52,14 +34,14 @@ namespace TenDaysOfXamarin
             int insertedCount = 0;
             Experience newExp = new Experience()
             {
-                Title = titleEntry.Text,
-                Content = contentEditor.Text,
+                Title = ViewModel.Title,
+                Content = ViewModel.Content,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                VenueName = venueNameLabel.Text,
-                VenueCategory = venueCategoryLabel.Text,
-                VenueLat = float.Parse(venueCoordinatesLabel.Text.Split(',')[0]),
-                VenueLng = float.Parse(venueCoordinatesLabel.Text.Split(',')[1])
+                VenueName = ViewModel.SelectedVenue.name,
+                VenueCategory = ViewModel.SelectedVenue.MainCategory ,
+                VenueLat = float.Parse(ViewModel.SelectedVenue.location.Coordinates.Split(',')[0]),
+                VenueLng = float.Parse(ViewModel.SelectedVenue.location.Coordinates.Split(',')[1])
             };
 
             using (SQLiteConnection connection = new SQLiteConnection(App.DatabasePath))
@@ -70,11 +52,9 @@ namespace TenDaysOfXamarin
 
             if (insertedCount > 0)
             {
-                titleEntry.Text = String.Empty;
-                contentEditor.Text = String.Empty;
-                venueNameLabel.Text = String.Empty;
-                venueCategoryLabel.Text = String.Empty;
-                venueCoordinatesLabel.Text = String.Empty;
+                ViewModel.Title = String.Empty;
+                ViewModel.Content = String.Empty;
+                ViewModel.SelectedVenue = null;              
             }
             else
             {
@@ -152,9 +132,9 @@ namespace TenDaysOfXamarin
         private async void searchEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
 
-            if (!string.IsNullOrWhiteSpace(searchEntry.Text) && position != null)
+            if (!string.IsNullOrWhiteSpace(ViewModel.Query) && position != null)
             {
-                string url = $"https://api.foursquare.com/v2/venues/search?ll={position.Latitude},{position.Longitude}&radius=500&query={searchEntry.Text}&limit=3&client_id={Helpers.Constants.FOURSQR_CLIENT_ID}&client_secret={Helpers.Constants.FOURSQR_CLIENT_SECRET}&v={DateTime.Now.ToString("yyyyMMdd")}";
+                string url = $"https://api.foursquare.com/v2/venues/search?ll={position.Latitude},{position.Longitude}&radius=500&query={ViewModel.Query}&limit=3&client_id={Helpers.Constants.FOURSQR_CLIENT_ID}&client_secret={Helpers.Constants.FOURSQR_CLIENT_SECRET}&v={DateTime.Now.ToString("yyyyMMdd")}";
 
                 // added using System.Net.Http;
                 using (HttpClient client = new HttpClient())
@@ -179,13 +159,8 @@ namespace TenDaysOfXamarin
             if (venuesListView.SelectedItem != null)
             {
                 selectedVenueStackLayout.IsVisible = true;
-                searchEntry.Text = string.Empty;
+                ViewModel.Query = string.Empty;
                 venuesListView.IsVisible = false;
-
-                Venue selectedVenue = venuesListView.SelectedItem as Venue;
-                venueNameLabel.Text = selectedVenue.name;
-                venueCategoryLabel.Text = selectedVenue.categories.FirstOrDefault()?.name;
-                venueCoordinatesLabel.Text = $"{selectedVenue.location.lat:0.000}, {selectedVenue.location.lng:0.000}";
             }
             else
             {
